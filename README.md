@@ -1,8 +1,6 @@
 # Software Engineering Concepts & Architecture — A Field Guide
 
-A knowledge base of the software-engineering concepts and architecture designs that the
-industry has accumulated over decades — each one grounded in **real pull requests** from the
-Mythos codebase (`Mythoswork/backend`, `Mythoswork/frontend`, `Mythoswork/frontend-main`).
+A knowledge base of the software-engineering concepts and architecture designs — grounded in **real pull requests**.
 
 The goal is to learn the *idea* (which is universal and outlives any framework) and then see
 *exactly how it shows up* in production code you have access to. Every document follows the
