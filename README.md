@@ -16,6 +16,17 @@ same shape:
 
 ---
 
+## 🎓 Want to *learn* this, not just look it up?
+
+These root docs are the **reference layer** (the encyclopedia). For a **learning layer** — the same
+15 topics broken into bite-sized lessons with worked TypeScript/SQL examples, ❌ bad → ✅ good
+patterns, self-quizzes, mini-projects, and **checklists you can tick off live on GitHub** — start
+here:
+
+### → **[learn/](learn/README.md)** · track everything in **[learn/PROGRESS.md](learn/PROGRESS.md)**
+
+---
+
 ## The documents
 
 | # | Document | Core question it answers |
