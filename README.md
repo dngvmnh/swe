@@ -1,5 +1,9 @@
 # Software Engineering Concepts & Architecture — A Field Guide
 
+[![Lessons](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fdngvmnh%2Fswe%2Fmain%2Fdocs%2Fprogress.json)](learn/PROGRESS.md)
+[![Live dashboard](https://img.shields.io/badge/live-dashboard-2f81f7?logo=github)](https://dngvmnh.github.io/swe/)
+[![Modules](https://img.shields.io/badge/modules-15-blue)](learn/README.md)
+
 A knowledge base of the software-engineering concepts and architecture designs — grounded in **real pull requests**.
 
 The goal is to learn the *idea* (which is universal and outlives any framework) and then see

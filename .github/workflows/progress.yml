@@ -1,0 +1,53 @@
+name: Update progress badge
+
+# Recomputes the lessons badge (docs/progress.json) whenever you tick boxes in
+# learn/PROGRESS.md and push to main. The committed JSON feeds a shields.io
+# endpoint badge in the READMEs, and the push triggers a GitHub Pages rebuild.
+
+on:
+  push:
+    branches: [main]
+    paths: ["learn/PROGRESS.md"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: progress-badge
+  cancel-in-progress: false
+
+jobs:
+  badge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute progress from learn/PROGRESS.md
+        run: |
+          set -euo pipefail
+          file=learn/PROGRESS.md
+          # Count only lesson lines: "- [ ] 1.2 ..." / "- [x] 1.2 ..."
+          total=$(grep -cE '^- \[( |x)\] [0-9]+\.[0-9]+ ' "$file" || true)
+          done=$(grep -cE '^- \[x\] [0-9]+\.[0-9]+ ' "$file" || true)
+          if [ "${total:-0}" -gt 0 ]; then pct=$(( done * 100 / total )); else pct=0; fi
+          if   [ "$pct" -ge 67 ]; then color=brightgreen
+          elif [ "$pct" -ge 34 ]; then color=yellow
+          else color=red; fi
+          mkdir -p docs
+          printf '{"schemaVersion":1,"label":"lessons","message":"%s/%s (%s%%)","color":"%s"}\n' \
+            "$done" "$total" "$pct" "$color" > docs/progress.json
+          echo "Progress: $done/$total ($pct%)"
+
+      - name: Commit if changed
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/progress.json
+          if git diff --cached --quiet; then
+            echo "No change to badge."
+          else
+            git commit -m "chore: update progress badge [skip ci]"
+            git push
+          fi

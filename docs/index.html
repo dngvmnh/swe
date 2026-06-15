@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SWE Curriculum — Progress Dashboard</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --panel-2: #1c2230; --border: #30363d;
+    --text: #e6edf3; --muted: #8b949e; --accent: #2f81f7;
+    --green: #3fb950; --amber: #d29922; --red: #f85149; --track: #21262d;
+    --radius: 12px; --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); line-height: 1.5; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 20px 80px; }
+  header h1 { font-size: 1.7rem; margin: 0 0 4px; }
+  header p { color: var(--muted); margin: 0 0 24px; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 28px; }
+  .btn { background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+    padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: .9rem; }
+  .btn:hover { border-color: var(--accent); }
+  .loaded { color: var(--muted); font-size: .8rem; margin-left: auto; }
+
+  .summary { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: center;
+    background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 28px; }
+  @media (max-width: 640px) { .summary { grid-template-columns: 1fr; text-align: center; } }
+  .ring { position: relative; width: 200px; height: 200px; margin: 0 auto; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring .pct { font-size: 2.6rem; font-weight: 700; }
+  .ring .sub { color: var(--muted); font-size: .85rem; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 480px) { .stats { grid-template-columns: 1fr; } }
+  .stat { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .stat .n { font-size: 1.5rem; font-weight: 700; }
+  .stat .l { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+
+  .modules { display: flex; flex-direction: column; gap: 10px; }
+  .mod { background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 18px; display: grid; grid-template-columns: 28px 1fr 140px 56px; gap: 14px; align-items: center; }
+  @media (max-width: 640px) { .mod { grid-template-columns: 24px 1fr 60px; } .mod .barcell { display: none; } }
+  .mod .num { color: var(--muted); font-variant-numeric: tabular-nums; font-size: .85rem; }
+  .mod .name { font-weight: 600; }
+  .mod .name .tags { color: var(--muted); font-weight: 400; font-size: .78rem; margin-top: 2px; }
+  .bar { height: 8px; background: var(--track); border-radius: 999px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; border-radius: 999px; transition: width .4s ease; }
+  .mod .count { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); font-size: .85rem; }
+  .done .name::after { content: " ✓"; color: var(--green); }
+
+  .section-title { margin: 36px 0 12px; font-size: 1rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .msg { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 18px; color: var(--muted); }
+  footer { margin-top: 40px; color: var(--muted); font-size: .82rem; border-top: 1px solid var(--border); padding-top: 18px; }
+  code { background: var(--panel-2); padding: 1px 6px; border-radius: 5px; font-size: .85em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🎓 SWE Curriculum — Progress</h1>
+    <p>A live view of <a id="repoLink" href="#">dngvmnh/swe</a> · reads
+       <a id="progLink" href="#"><code>learn/PROGRESS.md</code></a> straight from GitHub.</p>
+  </header>
+
+  <div class="toolbar">
+    <button class="btn" id="refresh">↻ Refresh</button>
+    <a class="btn" id="editLink" href="#" target="_blank" rel="noopener">✏️ Tick boxes on GitHub</a>
+    <a class="btn" id="hubLink" href="#" target="_blank" rel="noopener">📚 Course hub</a>
+    <span class="loaded" id="loaded"></span>
+  </div>
+
+  <div id="content"><div class="msg">Loading progress…</div></div>
+
+  <footer>
+    This page <strong>visualizes</strong> the checkboxes committed in <code>learn/PROGRESS.md</code> —
+    GitHub stays the source of truth. Tick a box by editing that file on GitHub (the ✏️ button above),
+    commit, then hit <strong>Refresh</strong>. Raw files are CDN-cached for a few minutes, so brand-new
+    commits can take a moment to appear.
+  </footer>
+</div>
+
+<script>
+  const OWNER = "dngvmnh", REPO = "swe", BRANCH = "main";
+  const RAW = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/learn/PROGRESS.md`;
+  const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
+  const blob = (p) => `${REPO_URL}/blob/${BRANCH}/learn/${p}`;
+
+  document.getElementById("repoLink").href = REPO_URL;
+  document.getElementById("progLink").href = blob("PROGRESS.md");
+  document.getElementById("editLink").href = `${REPO_URL}/edit/${BRANCH}/learn/PROGRESS.md`;
+  document.getElementById("hubLink").href = blob("README.md");
+
+  const reLesson  = /^- \[( |x)\]\s+\d+\.\d+\s/;
+  const reMastery = /^- \[( |x)\]\s+✅/;
+  const reProject = /^- \[( |x)\]\s+🛠️/;
+  const reModule  = /^##\s+Module\s+(\d+)\s+—\s+\[(.+?)\]\((.+?)\)/;
+  const reCapHead = /^##\s+.*Capstone/i;
+  const reAnyBox  = /^- \[( |x)\]/;
+  const isChecked = (line) => /^- \[x\]/.test(line);
+
+  function color(pct){ return pct >= 67 ? "var(--green)" : pct >= 34 ? "var(--amber)" : "var(--red)"; }
+
+  function parse(md){
+    const lines = md.split(/\r?\n/);
+    const modules = []; let cur = null, inCapstone = false;
+    let cap = { done: 0, total: 0 };
+    for (const line of lines){
+      const m = line.match(reModule);
+      if (m){ inCapstone = false; cur = { num: m[1], name: m[2], file: m[3],
+        lessonsDone:0, lessonsTotal:0, mastery:null, project:null }; modules.push(cur); continue; }
+      if (reCapHead.test(line)){ inCapstone = true; cur = null; continue; }
+      if (inCapstone){ if (reAnyBox.test(line)){ cap.total++; if (isChecked(line)) cap.done++; } continue; }
+      if (!cur) continue;
+      if (reLesson.test(line)){ cur.lessonsTotal++; if (isChecked(line)) cur.lessonsDone++; }
+      else if (reMastery.test(line)){ cur.mastery = isChecked(line); }
+      else if (reProject.test(line)){ cur.project = isChecked(line); }
+    }
+    return { modules, cap };
+  }
+
+  function render({ modules, cap }){
+    const lessonsDone = modules.reduce((a,m)=>a+m.lessonsDone,0);
+    const lessonsTotal = modules.reduce((a,m)=>a+m.lessonsTotal,0) || 1;
+    const mastery = modules.filter(m=>m.mastery).length;
+    const projects = modules.filter(m=>m.project).length;
+    const pct = Math.round(lessonsDone/lessonsTotal*100);
+    const R = 88, C = 2*Math.PI*R, off = C*(1-pct/100);
+
+    const ring = `
+      <div class="ring">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="${R}" fill="none" stroke="var(--track)" stroke-width="14"/>
+          <circle cx="100" cy="100" r="${R}" fill="none" stroke="${color(pct)}" stroke-width="14"
+            stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}"/>
+        </svg>
+        <div class="center"><div class="pct">${pct}%</div><div class="sub">${lessonsDone} / ${lessonsTotal} lessons</div></div>
+      </div>`;
+
+    const stats = `
+      <div class="stats">
+        <div class="stat"><div class="n">${lessonsDone}/${lessonsTotal}</div><div class="l">Lessons</div></div>
+        <div class="stat"><div class="n">${mastery}/${modules.length}</div><div class="l">Mastery ✅</div></div>
+        <div class="stat"><div class="n">${projects}/${modules.length}</div><div class="l">Projects 🛠️</div></div>
+      </div>`;
+
+    const rows = modules.map(m=>{
+      const t = m.lessonsTotal || 1, p = Math.round(m.lessonsDone/t*100);
+      const complete = m.lessonsDone===m.lessonsTotal && m.mastery && m.project;
+      return `<div class="mod ${complete?'done':''}">
+        <div class="num">${m.num}</div>
+        <div class="name"><a href="${blob(m.file)}" target="_blank" rel="noopener">${m.name}</a>
+          <div class="tags">${m.mastery?'✅ mastery':'▫ mastery'} · ${m.project?'🛠️ project':'▫ project'}</div></div>
+        <div class="barcell"><div class="bar"><span style="width:${p}%;background:${color(p)}"></span></div></div>
+        <div class="count">${m.lessonsDone}/${m.lessonsTotal}</div>
+      </div>`;
+    }).join("");
+
+    const capLine = cap.total ? `<div class="section-title">🏁 Capstone</div>
+      <div class="mod"><div class="num">—</div>
+        <div class="name">Capstone checklist</div>
+        <div class="barcell"><div class="bar"><span style="width:${Math.round(cap.done/cap.total*100)}%;background:${color(Math.round(cap.done/cap.total*100))}"></span></div></div>
+        <div class="count">${cap.done}/${cap.total}</div></div>` : "";
+
+    document.getElementById("content").innerHTML =
+      `<div class="summary">${ring}${stats}</div>
+       <div class="section-title">Modules</div>
+       <div class="modules">${rows}</div>${capLine}`;
+  }
+
+  async function load(){
+    document.getElementById("content").innerHTML = `<div class="msg">Loading progress…</div>`;
+    try {
+      const res = await fetch(`${RAW}?_=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      render(parse(await res.text()));
+      const d = new Date();
+      document.getElementById("loaded").textContent = "Loaded " + d.toLocaleTimeString();
+    } catch (e) {
+      document.getElementById("content").innerHTML =
+        `<div class="msg">Couldn't load <code>PROGRESS.md</code> (${e.message}).
+         <a href="${blob('PROGRESS.md')}" target="_blank" rel="noopener">Open it on GitHub →</a></div>`;
+    }
+  }
+  document.getElementById("refresh").addEventListener("click", load);
+  load();
+</script>
+</body>
+</html>
