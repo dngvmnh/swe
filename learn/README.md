@@ -54,9 +54,14 @@ Each lesson ends with the same three checkboxes. They are deliberately ordered f
 
 ---
 
-## 🗺️ The 15 modules
+## 🗺️ The 21 modules
 
 Read top-to-bottom the first time — the foundations (01–03) hold up everything after them.
+Modules **01–15** are the core field guide (each backed by a root reference doc). Modules **16–21**
+are deep-dives mined from a full crawl of the Mythos backend, frontends, and SDK — grounded directly
+in real files rather than a reference doc.
+
+### Core field guide (01–15)
 
 | #  | Module | Core question | Reference |
 |----|--------|---------------|-----------|
@@ -76,16 +81,30 @@ Read top-to-bottom the first time — the foundations (01–03) hold up everythi
 | 14 | [Async jobs & scheduling](14-async-jobs.md) | How do you work outside the request cycle? | [↗](../14-async-jobs-and-scheduling.md) |
 | 15 | [Spec-driven dev & governance](15-spec-governance.md) | How does a team decide & remember how it builds? | [↗](../15-spec-driven-development-and-governance.md) |
 
+### Mythos codebase deep-dives (16–21)
+
+These came out of the codebase crawl — every example is copied or faithfully adapted from a real file.
+
+| #  | Module | Core question | Grounded in |
+|----|--------|---------------|-------------|
+| 16 | [Cryptography & key management](16-cryptography-key-management.md) | How do you store and rotate signing keys without leaking them? | `crypto/signing-keys.ts`, JWKS, rotation RPC |
+| 17 | [SDK & library design](17-sdk-library-design.md) | How do you design a library others integrate? | the Python SDK (`mythos_sdk/*`) |
+| 18 | [Resilience & failure modes](18-resilience-failure-modes.md) | What should code do when a step fails? | fail-open/closed, sagas, reconciliation |
+| 19 | [Integration & protocol design](19-integration-protocol-design.md) | How do two systems agree on a trustworthy protocol? | launch/consume/meter, ADRs, contract drift |
+| 20 | [Performance & data access](20-performance-data-access.md) | Why is a request slow, and how do you fix it? | N+1 spec, keyset pagination, query caching |
+| 21 | [Observability & operations](21-observability-operations.md) | How do you see and operate it in production? | structured logging, request IDs, runbooks |
+
 ---
 
 ## Suggested learning paths
 
-You don't have to go 1→15. Pick the track that matches why you're here.
+You don't have to go in order. Pick the track that matches why you're here.
 
-- **🧱 Backend correctness (the Mythos core):** 01 → 02 → 03 → 09 → 14 → 06
-- **🔌 Building an API from scratch:** 07 → 06 → 04 → 10 → 08
-- **🎨 Frontend track:** 12 → 13 → 05 → 08
-- **🚢 Ship & operate:** 11 → 10 → 03 → 15
+- **🧱 Backend correctness (the Mythos core):** 01 → 02 → 03 → 09 → 14 → 06 → 18
+- **🔌 Building an API from scratch:** 07 → 06 → 04 → 10 → 08 → 20
+- **🎨 Frontend track:** 12 → 13 → 05 → 08 → 20
+- **🚢 Ship & operate:** 11 → 10 → 03 → 15 → 21
+- **🔐 Platform / SDK / integration (the deep-dives):** 16 → 17 → 19 → 18 → 21
 - **📐 "Make me a better engineer" (no order assumed):** 13 → 06 → 07 → 10 → 15
 
 ---

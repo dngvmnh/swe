@@ -3,9 +3,12 @@
 [![Lessons](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fdngvmnh%2Fswe%2Fmain%2Fdocs%2Fprogress.json)](PROGRESS.md)
 [![Live dashboard](https://img.shields.io/badge/live-dashboard-2f81f7?logo=github)](https://dngvmnh.github.io/swe/)
 
-Your single source of truth for tracking the course. **88 lessons across 15 modules.**
+Your single source of truth for tracking the course. **122 lessons across 21 modules.**
 The badge and the **[live dashboard](https://dngvmnh.github.io/swe/)** update automatically from
 this file when you commit a ticked box.
+
+> Modules **01–15** are the original field guide. Modules **16–21** were added from a deep crawl of
+> the Mythos backend, both frontends, and the Python SDK — each lesson is grounded in real files.
 
 > **How to tick a box on GitHub:** open this file on github.com → click the ✏️ pencil → change
 > `- [ ]` to `- [x]` → *Commit changes*. Your commit history becomes a dated record of what you
@@ -18,30 +21,45 @@ this file when you commit a ticked box.
 
 ## Overall progress
 
-Update these tallies as you go (count your `[x]`s):
+The **[live dashboard](https://dngvmnh.github.io/swe/)** computes these automatically from your ticks
+below. (Manual tally if you prefer: count your `[x]`s.)
 
-- **Lessons:** `___ / 88`
-- **Module mastery checklists:** `___ / 15`
-- **Mini-projects built:** `___ / 15`
+- **Lessons:** `___ / 122`
+- **Module mastery checklists:** `___ / 21`
+- **Mini-projects built:** `___ / 21`
 - **Started on:** `__________`  ·  **Target finish:** `__________`
 
-| # | Module | Lessons | Done? | ✅ Mastery | 🛠️ Project |
-|---|--------|:-------:|:-----:|:---------:|:----------:|
-| 01 | [Idempotency](01-idempotency.md) | 5 | [ ] | [ ] | [ ] |
-| 02 | [Concurrency & locking](02-concurrency.md) | 6 | [ ] | [ ] | [ ] |
-| 03 | [Database & migrations](03-database-migrations.md) | 6 | [ ] | [ ] | [ ] |
-| 04 | [Auth & authorization](04-auth.md) | 6 | [ ] | [ ] | [ ] |
-| 05 | [Incremental migration](05-incremental-migration.md) | 5 | [ ] | [ ] | [ ] |
-| 06 | [Error handling](06-error-handling.md) | 6 | [ ] | [ ] | [ ] |
-| 07 | [API design & layers](07-api-design.md) | 6 | [ ] | [ ] | [ ] |
-| 08 | [Security engineering](08-security.md) | 6 | [ ] | [ ] | [ ] |
-| 09 | [Payments & billing](09-payments.md) | 6 | [ ] | [ ] | [ ] |
-| 10 | [Testing & gates](10-testing.md) | 6 | [ ] | [ ] | [ ] |
-| 11 | [DevOps, CI/CD](11-devops-cicd.md) | 6 | [ ] | [ ] | [ ] |
-| 12 | [Frontend & rendering](12-frontend.md) | 6 | [ ] | [ ] | [ ] |
-| 13 | [SOLID, DRY, clean code](13-design-principles.md) | 6 | [ ] | [ ] | [ ] |
-| 14 | [Async jobs & scheduling](14-async-jobs.md) | 6 | [ ] | [ ] | [ ] |
-| 15 | [Spec-driven dev & governance](15-spec-governance.md) | 6 | [ ] | [ ] | [ ] |
+> Tick the boxes in the per-module sections below (they're the single source of truth — the dashboard
+> and badge read them). The table is just a map.
+
+### Core field guide (01–15)
+| # | Module | Lessons |
+|---|--------|:-------:|
+| 01 | [Idempotency](01-idempotency.md) | 5 |
+| 02 | [Concurrency & locking](02-concurrency.md) | 6 |
+| 03 | [Database & migrations](03-database-migrations.md) | 6 |
+| 04 | [Auth & authorization](04-auth.md) | 6 |
+| 05 | [Incremental migration](05-incremental-migration.md) | 5 |
+| 06 | [Error handling](06-error-handling.md) | 6 |
+| 07 | [API design & layers](07-api-design.md) | 6 |
+| 08 | [Security engineering](08-security.md) | 6 |
+| 09 | [Payments & billing](09-payments.md) | 6 |
+| 10 | [Testing & gates](10-testing.md) | 6 |
+| 11 | [DevOps, CI/CD](11-devops-cicd.md) | 6 |
+| 12 | [Frontend & rendering](12-frontend.md) | 6 |
+| 13 | [SOLID, DRY, clean code](13-design-principles.md) | 6 |
+| 14 | [Async jobs & scheduling](14-async-jobs.md) | 6 |
+| 15 | [Spec-driven dev & governance](15-spec-governance.md) | 6 |
+
+### Mythos codebase deep-dives (16–21)
+| # | Module | Lessons |
+|---|--------|:-------:|
+| 16 | [Cryptography & key management](16-cryptography-key-management.md) | 5 |
+| 17 | [SDK & library design](17-sdk-library-design.md) | 6 |
+| 18 | [Resilience & failure modes](18-resilience-failure-modes.md) | 6 |
+| 19 | [Integration & protocol design](19-integration-protocol-design.md) | 6 |
+| 20 | [Performance & data access](20-performance-data-access.md) | 6 |
+| 21 | [Observability & operations](21-observability-operations.md) | 5 |
 
 ---
 
@@ -195,11 +213,74 @@ Update these tallies as you go (count your `[x]`s):
 
 ---
 
+## Module 16 — [Cryptography & key management](16-cryptography-key-management.md)
+- [ ] 16.1 Authenticated encryption (AES-256-GCM) & ciphertext framing
+- [ ] 16.2 Envelope encryption with a key-encryption-key (KEK)
+- [ ] 16.3 Public/private separation & the JWKS document
+- [ ] 16.4 Pluggable encryption with a versioned method (planning for KMS)
+- [ ] 16.5 Atomic key rotation with zero verification downtime
+- [ ] ✅ Module 16 mastery checklist
+- [ ] 🛠️ Mini-project: a secret vault (encrypt · JWKS · rotate)
+
+## Module 17 — [SDK & library design](17-sdk-library-design.md)
+- [ ] 17.1 A thin public facade over private internals
+- [ ] 17.2 Cache an expensive remote resource (JWKS) with a TTL
+- [ ] 17.3 Verify JWTs safely: allow-list algorithms, validate every audience
+- [ ] 17.4 Map transport errors to typed domain errors
+- [ ] 17.5 12-factor config (fail-fast) + a capability handshake
+- [ ] 17.6 Fragile couplings: string-matching a dependency, and pinning against it
+- [ ] ✅ Module 17 mastery checklist
+- [ ] 🛠️ Mini-project: a verification SDK
+
+## Module 18 — [Resilience & failure modes](18-resilience-failure-modes.md)
+- [ ] 18.1 Fail-closed vs fail-open
+- [ ] 18.2 Compensating transactions (the saga)
+- [ ] 18.3 Reconciliation loops (re-sync against the source of truth)
+- [ ] 18.4 Resilient batch processing (per-item isolation)
+- [ ] 18.5 Compensate-don't-rollback in a sweep + compare-and-set
+- [ ] 18.6 Idempotency keys make external calls retry-safe
+- [ ] ✅ Module 18 mastery checklist
+- [ ] 🛠️ Mini-project: a flaky payout (saga + reconcile)
+
+## Module 19 — [Integration & protocol design](19-integration-protocol-design.md)
+- [ ] 19.1 Invert the integration direction to dissolve the hard problem
+- [ ] 19.2 The launch token as an OAuth authorization-code analog
+- [ ] 19.3 Token-delivery trade-offs and a documented upgrade path
+- [ ] 19.4 Place the invariant on the right side of the trust boundary
+- [ ] 19.5 System-driven state transitions (API is the primitive)
+- [ ] 19.6 Catch contract drift with an independent reference
+- [ ] ✅ Module 19 mastery checklist
+- [ ] 🛠️ Mini-project: a mini launch protocol
+
+## Module 20 — [Performance & data access](20-performance-data-access.md)
+- [ ] 20.1 Kill N+1 queries: batch, merge, parallelize
+- [ ] 20.2 Index the hot path; paginate with keyset cursors
+- [ ] 20.3 Client-side server-cache (staleTime/gcTime, dependent queries, invalidation)
+- [ ] 20.4 HTTP caching for public, slow-changing endpoints
+- [ ] 20.5 Reuse connections with lazy-singleton client factories
+- [ ] 20.6 Measure, don't guess
+- [ ] ✅ Module 20 mastery checklist
+- [ ] 🛠️ Mini-project: speed up a slow endpoint
+
+## Module 21 — [Observability & operations](21-observability-operations.md)
+- [ ] 21.1 Structured logging with secret redaction
+- [ ] 21.2 Correlation IDs (one request, one thread of logs)
+- [ ] 21.3 Middleware ordering is a contract
+- [ ] 21.4 Monitor unit economics as SLOs
+- [ ] 21.5 Runbooks as executable documentation
+- [ ] ✅ Module 21 mastery checklist
+- [ ] 🛠️ Mini-project: operationalize an API
+
+---
+
 ## 🏁 Capstone (optional)
-Tie it all together — extend the wallet from Modules 09/10 into a tiny marketplace:
+Tie it all together — extend the wallet from Modules 09/10 into a tiny marketplace **with a launch protocol**:
 - [ ] An idempotent, locked, atomic metered-charge endpoint (01, 02, 06, 07, 09)
 - [ ] A Stripe-style webhook that's signature-verified and amount-checked (08, 09)
 - [ ] A renewal cron with a synthetic key + safety-net (14)
 - [ ] A real-DB integration suite covering the invariants (10)
 - [ ] A CI gate + a migration applied through the pipeline (03, 11)
 - [ ] A spec, an ADR, and conventional commits for the whole thing (15)
+- [ ] Per-listing signing keys (AES-GCM at rest) + a JWKS endpoint with rotation (16)
+- [ ] A launch token (short-lived, single-use, signed, audience-scoped) verified by a small SDK that fails closed (17, 18, 19)
+- [ ] N+1-free reads, keyset pagination, and structured logs with a request id (20, 21)
