@@ -15,14 +15,39 @@
   body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); line-height: 1.5; }
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
-  .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 20px 80px; }
+  .wrap { max-width: 1020px; margin: 0 auto; padding: 32px 20px 80px; }
   header h1 { font-size: 1.7rem; margin: 0 0 4px; }
-  header p { color: var(--muted); margin: 0 0 24px; }
-  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 28px; }
+  header p { color: var(--muted); margin: 0 0 20px; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
   .btn { background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
-    padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: .9rem; }
+    padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: .9rem; display: inline-flex; gap: 6px; align-items: center; }
   .btn:hover { border-color: var(--accent); }
+  .btn.primary { background: #1f6feb; border-color: #1f6feb; }
+  .btn.primary:hover { background: #2f81f7; }
+  .btn:disabled { opacity: .5; cursor: default; }
   .loaded { color: var(--muted); font-size: .8rem; margin-left: auto; }
+
+  /* sync bar */
+  .syncbar { display: none; align-items: center; gap: 12px; background: #1c2a18; border: 1px solid #2ea04326;
+    border-left: 3px solid var(--green); border-radius: 10px; padding: 10px 14px; margin-bottom: 18px; font-size: .9rem; }
+  .syncbar.show { display: flex; }
+  .syncbar .count { font-weight: 700; }
+  .syncbar .spacer { flex: 1; }
+  .linkbtn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: .85rem; text-decoration: underline; padding: 0; }
+
+  /* settings panel */
+  .panel { display: none; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 18px; }
+  .panel.show { display: block; }
+  .panel h3 { margin: 0 0 8px; font-size: 1rem; }
+  .panel p { color: var(--muted); font-size: .85rem; margin: 0 0 12px; }
+  .panel label { display: block; font-size: .8rem; color: var(--muted); margin: 10px 0 4px; }
+  .panel input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    border-radius: 7px; padding: 8px 10px; font-size: .9rem; font-family: ui-monospace, monospace; }
+  .panel .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  @media (max-width: 560px){ .panel .row { grid-template-columns: 1fr; } }
+  .panel .actions { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .ok { color: var(--green); } .err { color: var(--red); } .warn { color: var(--amber); }
+  .status { font-size: .85rem; margin-top: 10px; min-height: 1.2em; }
 
   .summary { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: center;
     background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 28px; }
@@ -38,19 +63,30 @@
   .stat .n { font-size: 1.5rem; font-weight: 700; }
   .stat .l { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
 
-  .modules { display: flex; flex-direction: column; gap: 10px; }
-  .mod { background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
-    padding: 14px 18px; display: grid; grid-template-columns: 28px 1fr 140px 56px; gap: 14px; align-items: center; }
-  @media (max-width: 640px) { .mod { grid-template-columns: 24px 1fr 60px; } .mod .barcell { display: none; } }
+  .modules { display: flex; flex-direction: column; gap: 8px; }
+  .mod { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .mod summary { list-style: none; cursor: pointer; padding: 13px 16px;
+    display: grid; grid-template-columns: 28px 1fr 130px 52px 18px; gap: 12px; align-items: center; }
+  .mod summary::-webkit-details-marker { display: none; }
+  @media (max-width: 640px) { .mod summary { grid-template-columns: 24px 1fr 56px 18px; } .mod .barcell { display: none; } }
   .mod .num { color: var(--muted); font-variant-numeric: tabular-nums; font-size: .85rem; }
   .mod .name { font-weight: 600; }
   .mod .name .tags { color: var(--muted); font-weight: 400; font-size: .78rem; margin-top: 2px; }
   .bar { height: 8px; background: var(--track); border-radius: 999px; overflow: hidden; }
   .bar > span { display: block; height: 100%; border-radius: 999px; transition: width .4s ease; }
   .mod .count { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); font-size: .85rem; }
-  .done .name::after { content: " ✓"; color: var(--green); }
+  .mod .chev { color: var(--muted); transition: transform .2s; text-align: center; }
+  .mod[open] .chev { transform: rotate(90deg); }
+  .mod.done .name a { color: var(--green); }
 
-  .section-title { margin: 36px 0 12px; font-size: 1rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .items { padding: 4px 16px 14px 16px; border-top: 1px solid var(--border); }
+  .item { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: .92rem; }
+  .item input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--green); cursor: pointer; flex: none; }
+  .item label { cursor: pointer; }
+  .item.checked label { color: var(--muted); text-decoration: line-through; text-decoration-color: #3fb95066; }
+  .item.dirty label::after { content: " ●"; color: var(--amber); }
+
+  .section-title { margin: 34px 0 12px; font-size: 1rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
   .msg { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 18px; color: var(--muted); }
   footer { margin-top: 40px; color: var(--muted); font-size: .82rem; border-top: 1px solid var(--border); padding-top: 18px; }
   code { background: var(--panel-2); padding: 1px 6px; border-radius: 5px; font-size: .85em; }
@@ -60,131 +96,302 @@
 <div class="wrap">
   <header>
     <h1>🎓 SWE Curriculum — Progress</h1>
-    <p>A live view of <a id="repoLink" href="#">dngvmnh/swe</a> · reads
-       <a id="progLink" href="#"><code>learn/PROGRESS.md</code></a> straight from GitHub.</p>
+    <p>Tick boxes right here. Changes save in your browser instantly, and you can
+       <strong>sync them back to <a id="repoLink" href="#">GitHub</a></strong> with one click.</p>
   </header>
 
   <div class="toolbar">
-    <button class="btn" id="refresh">↻ Refresh</button>
-    <a class="btn" id="editLink" href="#" target="_blank" rel="noopener">✏️ Tick boxes on GitHub</a>
+    <button class="btn" id="refresh">↻ Refresh from GitHub</button>
+    <button class="btn" id="toggleSettings">⚙️ GitHub sync</button>
     <a class="btn" id="hubLink" href="#" target="_blank" rel="noopener">📚 Course hub</a>
+    <a class="btn" id="editLink" href="#" target="_blank" rel="noopener">✏️ Edit raw on GitHub</a>
     <span class="loaded" id="loaded"></span>
+  </div>
+
+  <div class="syncbar" id="syncbar">
+    <span><span class="count" id="dirtyCount">0</span> unsaved change(s) in this browser</span>
+    <span class="spacer"></span>
+    <button class="btn primary" id="syncBtn">⬆️ Sync to GitHub</button>
+    <button class="btn" id="copyBtn">📋 Copy updated file</button>
+    <button class="linkbtn" id="discardBtn">discard</button>
+  </div>
+
+  <div class="panel" id="settings">
+    <h3>Sync checkboxes to GitHub</h3>
+    <p>Optional. Without this, ticks are saved in this browser only. To write them back to
+       <code>learn/PROGRESS.md</code>, paste a <strong>fine-grained Personal Access Token</strong> with
+       <strong>Contents: Read &amp; write</strong> scoped to just this repo. It's stored only in this browser's
+       <code>localStorage</code> — never sent anywhere except api.github.com.
+       <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create one →</a></p>
+    <div class="row">
+      <div><label>Owner</label><input id="owner" /></div>
+      <div><label>Repo</label><input id="repo" /></div>
+      <div><label>Branch</label><input id="branch" /></div>
+    </div>
+    <label>Token (<code>github_pat_…</code>)</label>
+    <input id="token" type="password" placeholder="github_pat_..." autocomplete="off" />
+    <div class="actions">
+      <button class="btn primary" id="saveToken">Save token</button>
+      <button class="btn" id="clearToken">Disconnect</button>
+      <span class="status" id="settingsStatus"></span>
+    </div>
   </div>
 
   <div id="content"><div class="msg">Loading progress…</div></div>
 
   <footer>
-    This page <strong>visualizes</strong> the checkboxes committed in <code>learn/PROGRESS.md</code> —
-    GitHub stays the source of truth. Tick a box by editing that file on GitHub (the ✏️ button above),
-    commit, then hit <strong>Refresh</strong>. Raw files are CDN-cached for a few minutes, so brand-new
-    commits can take a moment to appear.
+    Checkboxes are interactive: clicking one saves to this browser immediately and updates the ring above.
+    The <strong>Sync to GitHub</strong> button commits your ticks to <code>learn/PROGRESS.md</code> (needs a token,
+    set under ⚙️). No token? Use <strong>Copy updated file</strong> and paste it into the GitHub editor, or just keep
+    your progress locally. GitHub stays the source of truth — a sync or refresh re-reads it. Raw files are CDN-cached
+    for a few minutes, so a fresh commit may take a moment to appear after Refresh.
   </footer>
 </div>
 
 <script>
-  const OWNER = "dngvmnh", REPO = "swe", BRANCH = "main";
-  const RAW = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/learn/PROGRESS.md`;
-  const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
-  const blob = (p) => `${REPO_URL}/blob/${BRANCH}/learn/${p}`;
+  // ---- config (defaults; editable in the settings panel) ----
+  const DEFAULTS = { owner: "dngvmnh", repo: "swe", branch: "main", path: "learn/PROGRESS.md" };
+  const LS = { overlay: "swe_progress_overlay_v1", cfg: "swe_progress_cfg_v1", token: "swe_progress_token_v1" };
 
-  document.getElementById("repoLink").href = REPO_URL;
-  document.getElementById("progLink").href = blob("PROGRESS.md");
-  document.getElementById("editLink").href = `${REPO_URL}/edit/${BRANCH}/learn/PROGRESS.md`;
-  document.getElementById("hubLink").href = blob("README.md");
+  const cfg = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem(LS.cfg) || "{}"));
+  let overlay = JSON.parse(localStorage.getItem(LS.overlay) || "{}");  // { label: bool }
+  let rawText = "";          // last loaded PROGRESS.md text
+  let parsed = null;         // parsed model
+  const openModules = new Set();   // which module rows are expanded (preserved across re-render)
 
-  const reLesson  = /^- \[( |x)\]\s+\d+\.\d+\s/;
-  const reMastery = /^- \[( |x)\]\s+✅/;
-  const reProject = /^- \[( |x)\]\s+🛠️/;
+  const $ = (id) => document.getElementById(id);
+  const rawUrl = () => `https://raw.githubusercontent.com/${cfg.owner}/${cfg.repo}/${cfg.branch}/${cfg.path}`;
+  const repoUrl = () => `https://github.com/${cfg.owner}/${cfg.repo}`;
+  const blob = (p) => `${repoUrl()}/blob/${cfg.branch}/learn/${p}`;
+  const saveOverlay = () => localStorage.setItem(LS.overlay, JSON.stringify(overlay));
+
+  $("repoLink").href = repoUrl();
+  function refreshLinks(){
+    $("editLink").href = `${repoUrl()}/edit/${cfg.branch}/${cfg.path}`;
+    $("hubLink").href = blob("README.md");
+  }
+
+  // ---- UTF-8 safe base64 (file has emoji) ----
+  const b64encode = (str) => btoa(String.fromCharCode(...new TextEncoder().encode(str)));
+  const b64decode = (b64) => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\s/g, "")), c => c.charCodeAt(0)));
+
+  // ---- parsing ----
   const reModule  = /^##\s+Module\s+(\d+)\s+—\s+\[(.+?)\]\((.+?)\)/;
   const reCapHead = /^##\s+.*Capstone/i;
-  const reAnyBox  = /^- \[( |x)\]/;
+  const reAnyBox  = /^- \[( |x)\]\s+(.*)$/;
   const isChecked = (line) => /^- \[x\]/.test(line);
-
-  function color(pct){ return pct >= 67 ? "var(--green)" : pct >= 34 ? "var(--amber)" : "var(--red)"; }
+  const labelOf = (line) => { const m = line.match(reAnyBox); return m ? m[2].trim() : null; };
+  // classify by label TEXT (robust — avoids matching emoji inside the regex)
+  const classify = (label) =>
+    /^\d+\.\d+\s/.test(label) ? "lesson" :
+    /mastery checklist/i.test(label) ? "mastery" :
+    /mini-?project/i.test(label) ? "project" : "other";
 
   function parse(md){
     const lines = md.split(/\r?\n/);
-    const modules = []; let cur = null, inCapstone = false;
-    let cap = { done: 0, total: 0 };
-    for (const line of lines){
+    const modules = []; let cur = null, inCap = false;
+    const cap = { items: [] };
+    lines.forEach((line, i) => {
       const m = line.match(reModule);
-      if (m){ inCapstone = false; cur = { num: m[1], name: m[2], file: m[3],
-        lessonsDone:0, lessonsTotal:0, mastery:null, project:null }; modules.push(cur); continue; }
-      if (reCapHead.test(line)){ inCapstone = true; cur = null; continue; }
-      if (inCapstone){ if (reAnyBox.test(line)){ cap.total++; if (isChecked(line)) cap.done++; } continue; }
-      if (!cur) continue;
-      if (reLesson.test(line)){ cur.lessonsTotal++; if (isChecked(line)) cur.lessonsDone++; }
-      else if (reMastery.test(line)){ cur.mastery = isChecked(line); }
-      else if (reProject.test(line)){ cur.project = isChecked(line); }
-    }
-    return { modules, cap };
+      if (m){ inCap = false; cur = { num: m[1], name: m[2], file: m[3], items: [], mastery: null, project: null }; modules.push(cur); return; }
+      if (reCapHead.test(line)){ inCap = true; cur = null; return; }
+      if (!reAnyBox.test(line)) return;
+      const label = labelOf(line), checkedInFile = isChecked(line);
+      if (inCap){ cap.items.push({ line: i, kind: "cap", label, checkedInFile }); return; }
+      if (!cur) return;
+      const kind = classify(label);
+      const it = { line: i, kind, label, checkedInFile };
+      cur.items.push(it);
+      if (kind === "mastery") cur.mastery = it;
+      if (kind === "project") cur.project = it;
+    });
+    return { modules, cap, lineCount: lines.length };
   }
 
-  function render({ modules, cap }){
-    const lessonsDone = modules.reduce((a,m)=>a+m.lessonsDone,0);
-    const lessonsTotal = modules.reduce((a,m)=>a+m.lessonsTotal,0) || 1;
-    const mastery = modules.filter(m=>m.mastery).length;
-    const projects = modules.filter(m=>m.project).length;
-    const pct = Math.round(lessonsDone/lessonsTotal*100);
-    const R = 88, C = 2*Math.PI*R, off = C*(1-pct/100);
+  const checkedNow = (it) => (it.label in overlay) ? overlay[it.label] : it.checkedInFile;
+  const isDirty = (it) => (it.label in overlay) && overlay[it.label] !== it.checkedInFile;
+  function dirtyItems(){
+    const all = [];
+    parsed.modules.forEach(m => m.items.forEach(it => all.push(it)));
+    parsed.cap.items.forEach(it => all.push(it));
+    return all.filter(isDirty);
+  }
+  const color = (p) => p >= 67 ? "var(--green)" : p >= 34 ? "var(--amber)" : "var(--red)";
+  const esc = (s) => s.replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+  function captureOpen(){   // remember which module rows are expanded before we re-render
+    document.querySelectorAll(".mod[data-num]").forEach(d => {
+      if (d.open) openModules.add(d.dataset.num); else openModules.delete(d.dataset.num);
+    });
+  }
 
-    const ring = `
-      <div class="ring">
-        <svg width="200" height="200" viewBox="0 0 200 200">
-          <circle cx="100" cy="100" r="${R}" fill="none" stroke="var(--track)" stroke-width="14"/>
-          <circle cx="100" cy="100" r="${R}" fill="none" stroke="${color(pct)}" stroke-width="14"
-            stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}"/>
-        </svg>
-        <div class="center"><div class="pct">${pct}%</div><div class="sub">${lessonsDone} / ${lessonsTotal} lessons</div></div>
-      </div>`;
+  function render(){
+    captureOpen();
+    const lessons = parsed.modules.flatMap(m => m.items.filter(i => i.kind === "lesson"));
+    const lDone = lessons.filter(checkedNow).length, lTot = lessons.length || 1;
+    const mastery = parsed.modules.filter(m => m.mastery && checkedNow(m.mastery)).length;
+    const projects = parsed.modules.filter(m => m.project && checkedNow(m.project)).length;
+    const pct = Math.round(lDone / lTot * 100);
+    const R = 88, C = 2 * Math.PI * R, off = C * (1 - pct / 100);
 
-    const stats = `
-      <div class="stats">
-        <div class="stat"><div class="n">${lessonsDone}/${lessonsTotal}</div><div class="l">Lessons</div></div>
-        <div class="stat"><div class="n">${mastery}/${modules.length}</div><div class="l">Mastery ✅</div></div>
-        <div class="stat"><div class="n">${projects}/${modules.length}</div><div class="l">Projects 🛠️</div></div>
-      </div>`;
+    const ring = `<div class="ring"><svg width="200" height="200" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="${R}" fill="none" stroke="var(--track)" stroke-width="14"/>
+        <circle cx="100" cy="100" r="${R}" fill="none" stroke="${color(pct)}" stroke-width="14"
+          stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}"/></svg>
+      <div class="center"><div class="pct">${pct}%</div><div class="sub">${lDone} / ${lTot} lessons</div></div></div>`;
+    const stats = `<div class="stats">
+        <div class="stat"><div class="n">${lDone}/${lTot}</div><div class="l">Lessons</div></div>
+        <div class="stat"><div class="n">${mastery}/${parsed.modules.length}</div><div class="l">Mastery ✅</div></div>
+        <div class="stat"><div class="n">${projects}/${parsed.modules.length}</div><div class="l">Projects 🛠️</div></div></div>`;
 
-    const rows = modules.map(m=>{
-      const t = m.lessonsTotal || 1, p = Math.round(m.lessonsDone/t*100);
-      const complete = m.lessonsDone===m.lessonsTotal && m.mastery && m.project;
-      return `<div class="mod ${complete?'done':''}">
-        <div class="num">${m.num}</div>
-        <div class="name"><a href="${blob(m.file)}" target="_blank" rel="noopener">${m.name}</a>
-          <div class="tags">${m.mastery?'✅ mastery':'▫ mastery'} · ${m.project?'🛠️ project':'▫ project'}</div></div>
-        <div class="barcell"><div class="bar"><span style="width:${p}%;background:${color(p)}"></span></div></div>
-        <div class="count">${m.lessonsDone}/${m.lessonsTotal}</div>
-      </div>`;
+    const item = (it) => `<div class="item ${checkedNow(it) ? "checked" : ""} ${isDirty(it) ? "dirty" : ""}">
+        <input type="checkbox" data-label="${esc(it.label)}" ${checkedNow(it) ? "checked" : ""} />
+        <label data-label="${esc(it.label)}">${esc(it.label)}</label></div>`;
+
+    const rows = parsed.modules.map(m => {
+      const ls = m.items.filter(i => i.kind === "lesson");
+      const done = ls.filter(checkedNow).length, tot = ls.length || 1, p = Math.round(done / tot * 100);
+      const complete = done === ls.length && (!m.mastery || checkedNow(m.mastery)) && (!m.project || checkedNow(m.project));
+      return `<details class="mod ${complete ? "done" : ""}" data-num="${m.num}" ${openModules.has(m.num) ? "open" : ""}>
+        <summary>
+          <span class="num">${m.num}</span>
+          <span class="name"><a href="${blob(m.file)}" target="_blank" rel="noopener">${esc(m.name)}</a>
+            <span class="tags">${ls.length} lessons · ${m.mastery && checkedNow(m.mastery) ? "✅" : "▫"} mastery · ${m.project && checkedNow(m.project) ? "🛠️" : "▫"} project</span></span>
+          <span class="barcell"><span class="bar"><span style="width:${p}%;background:${color(p)}"></span></span></span>
+          <span class="count">${done}/${ls.length}</span>
+          <span class="chev">›</span>
+        </summary>
+        <div class="items">${m.items.map(item).join("")}</div>
+      </details>`;
     }).join("");
 
-    const capLine = cap.total ? `<div class="section-title">🏁 Capstone</div>
-      <div class="mod"><div class="num">—</div>
-        <div class="name">Capstone checklist</div>
-        <div class="barcell"><div class="bar"><span style="width:${Math.round(cap.done/cap.total*100)}%;background:${color(Math.round(cap.done/cap.total*100))}"></span></div></div>
-        <div class="count">${cap.done}/${cap.total}</div></div>` : "";
+    let capHtml = "";
+    if (parsed.cap.items.length){
+      const cd = parsed.cap.items.filter(checkedNow).length, ct = parsed.cap.items.length;
+      capHtml = `<div class="section-title">🏁 Capstone (${cd}/${ct})</div>
+        <div class="mod"><div class="items" style="border-top:none">${parsed.cap.items.map(item).join("")}</div></div>`;
+    }
 
-    document.getElementById("content").innerHTML =
-      `<div class="summary">${ring}${stats}</div>
-       <div class="section-title">Modules</div>
-       <div class="modules">${rows}</div>${capLine}`;
+    $("content").innerHTML = `<div class="summary">${ring}${stats}</div>
+      <div class="section-title">Modules — click a row to expand, tick the boxes</div>
+      <div class="modules">${rows}</div>${capHtml}`;
+    renderDirty();
   }
 
-  async function load(){
-    document.getElementById("content").innerHTML = `<div class="msg">Loading progress…</div>`;
+  function renderDirty(){
+    const n = dirtyItems().length;
+    $("dirtyCount").textContent = n;
+    $("syncbar").classList.toggle("show", n > 0);
+  }
+
+  // ---- interactions ----
+  $("content").addEventListener("change", (e) => {
+    const cb = e.target.closest('input[type="checkbox"]'); if (!cb) return;
+    const label = cb.getAttribute("data-label");
+    overlay[label] = cb.checked; saveOverlay(); render();
+  });
+  // let the whole label row toggle
+  $("content").addEventListener("click", (e) => {
+    const lbl = e.target.closest("label[data-label]"); if (!lbl) return;
+    const label = lbl.getAttribute("data-label");
+    const cur = parsed.modules.flatMap(m=>m.items).concat(parsed.cap.items).find(i => i.label === label);
+    if (!cur) return;
+    overlay[label] = !checkedNow(cur); saveOverlay(); render();
+  });
+
+  $("refresh").addEventListener("click", () => load(true));
+  $("discardBtn").addEventListener("click", () => {
+    if (!confirm("Discard all unsaved changes in this browser?")) return;
+    overlay = {}; saveOverlay(); render();
+  });
+
+  // build the updated file text from current overlay, applied to rawText by matching labels
+  function buildUpdatedFile(){
+    const lines = rawText.split(/\r?\n/);
+    let changed = 0;
+    const targets = {};
+    dirtyItems().forEach(it => { targets[it.line] = overlay[it.label]; });
+    Object.keys(targets).forEach(idx => {
+      const want = targets[idx]; const line = lines[idx];
+      const repl = line.replace(/^- \[( |x)\]/, want ? "- [x]" : "- [ ]");
+      if (repl !== line){ lines[idx] = repl; changed++; }
+    });
+    return { text: lines.join("\n"), changed };
+  }
+
+  $("copyBtn").addEventListener("click", async () => {
+    const { text } = buildUpdatedFile();
+    try { await navigator.clipboard.writeText(text);
+      flash($("dirtyCount").parentElement, "Copied — paste into the GitHub editor", "ok"); }
+    catch { const blobUrl = URL.createObjectURL(new Blob([text], { type: "text/markdown" }));
+      const a = document.createElement("a"); a.href = blobUrl; a.download = "PROGRESS.md"; a.click(); }
+  });
+
+  function flash(el, msg, cls){ const s = document.createElement("span");
+    s.className = cls; s.style.marginLeft = "8px"; s.textContent = msg; el.appendChild(s);
+    setTimeout(() => s.remove(), 4000); }
+
+  // ---- GitHub sync ----
+  $("syncBtn").addEventListener("click", syncToGitHub);
+  async function syncToGitHub(){
+    const token = localStorage.getItem(LS.token);
+    if (!token){ $("settings").classList.add("show"); setStatus("Add a token first (Contents: read & write).", "warn"); return; }
+    const btn = $("syncBtn"); btn.disabled = true; btn.textContent = "Syncing…";
     try {
-      const res = await fetch(`${RAW}?_=${Date.now()}`, { cache: "no-store" });
+      const api = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${encodeURIComponent(cfg.path)}?ref=${cfg.branch}`;
+      const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
+      const cur = await fetch(api, { headers, cache: "no-store" });
+      if (!cur.ok) throw new Error(`read ${cur.status}`);
+      const meta = await cur.json();
+      rawText = b64decode(meta.content); parsed = parse(rawText);   // freshest base
+      const { text, changed } = buildUpdatedFile();
+      if (!changed){ overlay = {}; saveOverlay(); render(); throw new Error("nothing to sync (already up to date)"); }
+      const put = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${encodeURIComponent(cfg.path)}`, {
+        method: "PUT", headers,
+        body: JSON.stringify({ message: `chore(progress): tick ${changed} item(s) via dashboard`,
+          content: b64encode(text), sha: meta.sha, branch: cfg.branch }),
+      });
+      if (!put.ok) throw new Error(`write ${put.status}: ${(await put.json()).message || ""}`);
+      overlay = {}; saveOverlay();
+      flash($("syncbar"), `✓ Synced ${changed} change(s) to GitHub`, "ok");
+      setTimeout(() => load(true), 1200);
+    } catch (e){
+      flash($("syncbar"), "✕ " + e.message, "err");
+    } finally { btn.disabled = false; btn.textContent = "⬆️ Sync to GitHub"; }
+  }
+
+  // ---- settings ----
+  $("toggleSettings").addEventListener("click", () => $("settings").classList.toggle("show"));
+  function fillSettings(){ $("owner").value = cfg.owner; $("repo").value = cfg.repo; $("branch").value = cfg.branch;
+    $("token").value = localStorage.getItem(LS.token) ? "••••••••••••••••" : ""; }
+  function setStatus(msg, cls){ const s = $("settingsStatus"); s.className = "status " + (cls || ""); s.textContent = msg; }
+  $("saveToken").addEventListener("click", () => {
+    cfg.owner = $("owner").value.trim() || DEFAULTS.owner;
+    cfg.repo = $("repo").value.trim() || DEFAULTS.repo;
+    cfg.branch = $("branch").value.trim() || DEFAULTS.branch;
+    localStorage.setItem(LS.cfg, JSON.stringify({ owner: cfg.owner, repo: cfg.repo, branch: cfg.branch }));
+    const t = $("token").value.trim();
+    if (t && !/^•+$/.test(t)) localStorage.setItem(LS.token, t);
+    refreshLinks(); $("repoLink").href = repoUrl();
+    setStatus(localStorage.getItem(LS.token) ? "Saved. You can now Sync to GitHub." : "Config saved (no token).", "ok");
+  });
+  $("clearToken").addEventListener("click", () => { localStorage.removeItem(LS.token); $("token").value = "";
+    setStatus("Token removed from this browser.", "warn"); });
+
+  // ---- load ----
+  async function load(bust){
+    $("content").innerHTML = `<div class="msg">Loading progress…</div>`;
+    try {
+      const res = await fetch(rawUrl() + (bust ? `?_=${Date.now()}` : ""), { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      render(parse(await res.text()));
-      const d = new Date();
-      document.getElementById("loaded").textContent = "Loaded " + d.toLocaleTimeString();
-    } catch (e) {
-      document.getElementById("content").innerHTML =
-        `<div class="msg">Couldn't load <code>PROGRESS.md</code> (${e.message}).
-         <a href="${blob('PROGRESS.md')}" target="_blank" rel="noopener">Open it on GitHub →</a></div>`;
+      rawText = await res.text(); parsed = parse(rawText); render();
+      $("loaded").textContent = "Loaded " + new Date().toLocaleTimeString();
+    } catch (e){
+      $("content").innerHTML = `<div class="msg">Couldn't load <code>PROGRESS.md</code> (${e.message}).
+        <a href="${blob("PROGRESS.md")}" target="_blank" rel="noopener">Open it on GitHub →</a></div>`;
     }
   }
-  document.getElementById("refresh").addEventListener("click", load);
-  load();
+
+  refreshLinks(); fillSettings(); load();
 </script>
 </body>
 </html>
