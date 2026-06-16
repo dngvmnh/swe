@@ -22,8 +22,9 @@ same shape:
 
 ## 🎓 Want to *learn* this, not just look it up?
 
-These root docs are the **reference layer** (the encyclopedia). For a **learning layer** — the same
-15 topics broken into bite-sized lessons with worked TypeScript/SQL examples, ❌ bad → ✅ good
+These root docs are the **reference layer** (the encyclopedia). For a **learning layer** — **21
+modules** (these 15 topics + 6 deep-dives mined from a full crawl of the Mythos backend, frontends,
+and SDK) broken into bite-sized lessons with worked TypeScript/SQL examples, ❌ bad → ✅ good
 patterns, self-quizzes, mini-projects, and **checklists you can tick off live on GitHub** — start
 here:
 
