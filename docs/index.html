@@ -80,11 +80,11 @@
   .mod.done .name a { color: var(--green); }
 
   .items { padding: 4px 16px 14px 16px; border-top: 1px solid var(--border); }
-  .item { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: .92rem; }
+  .item { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: .92rem; cursor: pointer; }
   .item input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--green); cursor: pointer; flex: none; }
-  .item label { cursor: pointer; }
-  .item.checked label { color: var(--muted); text-decoration: line-through; text-decoration-color: #3fb95066; }
-  .item.dirty label::after { content: " ●"; color: var(--amber); }
+  .item span { cursor: pointer; }
+  .item.checked span { color: var(--muted); text-decoration: line-through; text-decoration-color: #3fb95066; }
+  .item.dirty span::after { content: " ●"; color: var(--amber); }
 
   .section-title { margin: 34px 0 12px; font-size: 1rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
   .msg { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 18px; color: var(--muted); }
@@ -243,9 +243,9 @@
         <div class="stat"><div class="n">${mastery}/${parsed.modules.length}</div><div class="l">Mastery ✅</div></div>
         <div class="stat"><div class="n">${projects}/${parsed.modules.length}</div><div class="l">Projects 🛠️</div></div></div>`;
 
-    const item = (it) => `<div class="item ${checkedNow(it) ? "checked" : ""} ${isDirty(it) ? "dirty" : ""}">
+    const item = (it) => `<label class="item ${checkedNow(it) ? "checked" : ""} ${isDirty(it) ? "dirty" : ""}">
         <input type="checkbox" data-label="${esc(it.label)}" ${checkedNow(it) ? "checked" : ""} />
-        <label data-label="${esc(it.label)}">${esc(it.label)}</label></div>`;
+        <span>${esc(it.label)}</span></label>`;
 
     const rows = parsed.modules.map(m => {
       const ls = m.items.filter(i => i.kind === "lesson");
@@ -289,14 +289,7 @@
     const label = cb.getAttribute("data-label");
     overlay[label] = cb.checked; saveOverlay(); render();
   });
-  // let the whole label row toggle
-  $("content").addEventListener("click", (e) => {
-    const lbl = e.target.closest("label[data-label]"); if (!lbl) return;
-    const label = lbl.getAttribute("data-label");
-    const cur = parsed.modules.flatMap(m=>m.items).concat(parsed.cap.items).find(i => i.label === label);
-    if (!cur) return;
-    overlay[label] = !checkedNow(cur); saveOverlay(); render();
-  });
+  // (the native <label> wrapping each <input> toggles it on click — one change event, no double-fire)
 
   $("refresh").addEventListener("click", () => load(true));
   $("discardBtn").addEventListener("click", () => {
